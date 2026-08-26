@@ -1,7 +1,6 @@
-import os
 import sys
-
-
+from json_service import JsonService
+from file_manager import extraction, FileManager
 
 class CLI:
     def __init__(
@@ -14,26 +13,18 @@ class CLI:
         self.command = cmd
         self.args = args
         self.json_name = js_name
-
-        print(cmd, args)
-
-
-        self.run()
+        self.js_service = JsonService()
+        self.file_manager = FileManager()
 
     
-    def run(self) -> None:
-        self.json_existence()
+    def application_run(self) -> None:
+        json_add = getattr(self.js_service, self.command)
+        file_add = getattr(self.file_manager, self.command)
+        result = json_add(*self.args)
+        file_add(self.json_name, result)
 
 
-    def json_existence(self):
-        if self.json_name not in os.listdir():
-            with open(self.json_name, "w", encoding="utf-8") as file:
-                pass
-        
-
-def sys_extraction(*args):
-    _, *other = args
-    return other
 
 if __name__ == "__main__":
-    cli = CLI(*sys_extraction(*sys.argv))
+    cli = CLI(*extraction(*sys.argv))
+    cli.application_run()
