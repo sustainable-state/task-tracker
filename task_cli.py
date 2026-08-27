@@ -1,30 +1,29 @@
 import sys
-from json_service import JsonService
-from file_manager import extraction, FileManager
+from task_service import TaskService
+from utils import extract_rest
 
 class CLI:
-    def __init__(
-            self, 
-            cmd: str,
-            *args: str,
-            js_name: str = "tasks.json", 
-        ) -> None:
-        
-        self.command = cmd
-        self.args = args
+    def __init__(self, command: str, *args: str, js_name: str = "tasks.json") -> None:
         self.json_name = js_name
-        self.js_service = JsonService()
-        self.file_manager = FileManager()
+        self.command = command
+        self.args = args
+        
+        self.task_service = TaskService(js_name)
+
+        self.operator = {
+            "add": self.add_task
+        } 
 
     
-    def application_run(self) -> None:
-        json_add = getattr(self.js_service, self.command)
-        file_add = getattr(self.file_manager, self.command)
-        result = json_add(*self.args)
-        file_add(self.json_name, result)
+    def execute_opertion(self) -> None:
+        if self.command in self.operator:
+            self.operator[self.command]()
 
+    
+    def add_task(self) -> None:
+        self.task_service.add(*self.args)
 
 
 if __name__ == "__main__":
-    cli = CLI(*extraction(*sys.argv))
-    cli.application_run()
+    cli = CLI(*extract_rest(*sys.argv))
+    cli.execute_opertion()
