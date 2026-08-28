@@ -11,8 +11,9 @@ class CLI:
         self.task_service = TaskService(js_name)
 
         self.operator = {
-            "add": self.add_task
-        } 
+            "add": self.add_task,
+            "update": self.update_task
+        }
 
     
     def execute_opertion(self) -> None:
@@ -22,6 +23,13 @@ class CLI:
     
     def add_task(self) -> None:
         self.task_service.add(*self.args)
+
+    
+    def update_task(self) -> None:
+        id, description = self.args
+        self.task_service.update(int(id), description)
+
+
 
 
 if __name__ == "__main__":
