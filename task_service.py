@@ -22,40 +22,29 @@ class TaskService:
 
     
     def update(self, id: int, description: str) -> None:
-        print("UPDATE:")
-        print("id:", id, type(id))
-        print("description:", description, type(description))
-
         tasks = self.js_manager.read()
 
-        print("READ:", tasks)
-
         if tasks is None:
-            print("TASKS IS NONE")
             return
 
         if id in get_tasks_id(tasks):
-            print("ID FOUND")
-
             for task in tasks:
-                print("CHECK:", task["id"], type(task["id"]))
-
                 if task["id"] == id:
-                    print("TASK FOUND:", task)
-
                     task["description"] = description
                     task["updatedAt"] = current_datetime()
-
-                    print("CHANGED:", task)
                     break
-        else:
-            print("ID NOT FOUND")
-
-        print("BEFORE ADD:", tasks)
 
         self.js_manager.add(tasks=tasks)
 
-        print("ADD FINISHED")
+    
+    def delete(self, id: int) -> None:
+        tasks = [row for row in self.js_manager.read() if row["id"] != id]
+        
+        self.js_manager.add(tasks=tasks)
+    
+
+        
+
 
 
     def generate_task(
