@@ -1,20 +1,25 @@
 import json
-from decorator import require_json_file
+import os
+from utils import Task
 
 class JsonManager:
-    def __init__(self, js_name: str) -> None:
-        self.js_name = js_name
+    def __init__(self, file_name: str) -> None:
+        self.file_name = file_name
         
 
-    def add(self, tasks: dict) -> None:
-        with open(self.js_name, "w", encoding="utf-8") as file:
+    def save(self, tasks: list[Task]) -> None:
+        with open(self.file_name, "w", encoding="utf-8") as file:
             json.dump(tasks, file, indent=4)
     
 
-    @require_json_file
-    def read(self) -> dict:
+    def read(self) -> list[Task] | None:
+        if not os.path.exists(self.file_name):
+            return None
+
         try:
-            with open(self.js_name, "r", encoding="utf-8") as file:
+            with open(self.file_name, "r", encoding="utf-8") as file:
                 return json.load(file)
-        except json.decoder.JSONDecodeError:
+        except json.JSONDecodeError:
             return []
+
+

@@ -1,25 +1,33 @@
 from datetime import datetime
+from typing import TypedDict
+
+
+class Task(TypedDict):
+    id: int
+    description: str
+    status: str
+    createdAt: str
+    updatedAt: str | None
 
 
 def extract_rest(*args):
-    _, *other = args
-    return other
+    _, *rest = args
+    return rest
 
 
 def current_datetime() -> str:
     return datetime.now().strftime("%d-%m-%YT%H:%M")
 
 
-def generate_id(tasks: list[dict] | list | None) -> int:
-    if tasks is None or not bool(tasks):
+def generate_id(tasks: list[Task] | None) -> int:
+    if not tasks:
         return 1
-    
+
     return max(get_tasks_id(tasks)) + 1
 
 
-def get_tasks_id(tasks: list[dict] | list | None) -> tuple[int, ...]:
-    if tasks is None or not bool(tasks):
+def get_tasks_id(tasks: list[Task] | None) -> tuple[int, ...]:
+    if not tasks:
         return ()
-    
-    return tuple((task["id"] for task in tasks))
-    
+
+    return tuple(task["id"] for task in tasks)

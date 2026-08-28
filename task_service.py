@@ -4,64 +4,68 @@ from json_manager import JsonManager
 
 
 class TaskService:
-    def __init__(self, js_name: str):
-        self.js_name = js_name
-        self.js_manager = JsonManager(js_name)
+    def __init__(self, file_name: str):
+        self.file_name = file_name
+        self.js_manager = JsonManager(file_name)
         
 
-    def add(self, task: str, status: str = "todo") -> None:
+    def add(self, description: str) -> None:
         tasks = self.js_manager.read()
         date = current_datetime()
-        id = generate_id(tasks=tasks)
+        task_id = generate_id(tasks=tasks)
 
         if tasks is None:
             tasks = []
         
-        tasks.append(self.generate_task(id=id, task=task, status=status, cr_date=date))
-        self.js_manager.add(tasks=tasks)
+        tasks.append(
+            self.generate_task(
+                task_id=task_id, 
+                description=description, 
+                status="todo",
+                created_at=date
+            )
+        )
+
+        self.js_manager.save(tasks=tasks)
 
     
-    def update(self, id: int, description: str) -> None:
+    def update(self, task_id: int, description: str) -> None:
         tasks = self.js_manager.read()
 
         if tasks is None:
             return
 
-        if id in get_tasks_id(tasks):
+        if task_id in get_tasks_id(tasks):
             for task in tasks:
-                if task["id"] == id:
+                if task["id"] == task_id:
                     task["description"] = description
                     task["updatedAt"] = current_datetime()
                     break
 
-        self.js_manager.add(tasks=tasks)
+        self.js_manager.save(tasks=tasks)
 
     
-    def delete(self, id: int) -> None:
-        tasks = [row for row in self.js_manager.read() if row["id"] != id]
-        
-        self.js_manager.add(tasks=tasks)
+    def delete(self, task_id: int) -> None:
+        tasks = [row for row in self.js_manager.read() if row["id"] != task_id]
+
+        self.js_manager.save(tasks=tasks)
     
-
-        
-
-
 
     def generate_task(
             self,
-            id: int, 
-            task: str, 
+            task_id: int, 
+            description: str, 
             status: str, 
-            cr_date: datetime,
-            up_date: datetime | None = None
+            created_at: str,
+            updated_at: str | None = None
         ) -> dict:
 
         return {
-            "id": id,
-            "description": task,
+            "id": task_id,
+            "description": description,
             "status": status,
-            "createdAt": cr_date,
-            "updatedAt": up_date
+            "createdAt": created_at,
+            "updatedAt": updated_at
         }
 
 
