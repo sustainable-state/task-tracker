@@ -1,13 +1,15 @@
 from datetime import datetime
-from typing import TypedDict
+from dataclasses import dataclass
 
 
-class Task(TypedDict):
-    id: int
+@dataclass
+class Task:
+    task_id: int
     description: str
     status: str
     createdAt: str
     updatedAt: str | None
+
 
 
 def extract_rest(*args):
@@ -20,14 +22,14 @@ def current_datetime() -> str:
 
 
 def generate_id(tasks: list[Task] | None) -> int:
-    if not tasks:
+    try:
+        return max(get_tasks_id(tasks)) + 1
+    except ValueError:
         return 1
-
-    return max(get_tasks_id(tasks)) + 1
 
 
 def get_tasks_id(tasks: list[Task] | None) -> tuple[int, ...]:
     if not tasks:
         return ()
 
-    return tuple(task["id"] for task in tasks)
+    return tuple(task.task_id for task in tasks)
