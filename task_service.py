@@ -54,3 +54,20 @@ class TaskService:
         self.js_manager.save(tasks=tasks)
 
 
+    def mark(self, task_status: str, task_id: int) -> None:
+        tasks = self.js_manager.read()
+
+        if tasks is None:
+            return
+
+        if task_id in get_tasks_id(tasks):
+            for task in tasks:
+                if task.task_id == task_id:
+                    task.status = task_status
+                    task.updatedAt = current_datetime()
+                    break
+
+            self.js_manager.save(tasks=tasks)
+
+
+
