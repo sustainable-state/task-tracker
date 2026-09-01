@@ -1,7 +1,5 @@
 from datetime import datetime
 from dataclasses import dataclass
-from functools import wraps
-from typing import Callable
 
 
 @dataclass
@@ -11,22 +9,6 @@ class Task:
     status: str
     createdAt: str
     updatedAt: str | None
-
-
-def argument_count(count: int):
-    def decorator(func: Callable):
-        @wraps(func)
-        def wrapper(self):
-            if count != len(self.args):
-                print(
-                    f"Error: '{self.command}' requires {count} argument(s), "
-                    f"but {len(self.args)} were provided."
-                )
-                return 
-
-            return func(self)
-        return wrapper
-    return decorator
 
 
 def extract_rest(*args):
@@ -39,10 +21,10 @@ def current_datetime() -> str:
 
 
 def generate_id(tasks: list[Task] | None) -> int:
-    try:
-        return max(get_tasks_id(tasks)) + 1
-    except ValueError:
+    if not tasks:
         return 1
+
+    return max(get_tasks_id(tasks)) + 1
 
 
 def get_tasks_id(tasks: list[Task] | None) -> tuple[int, ...]:

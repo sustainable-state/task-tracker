@@ -1,6 +1,7 @@
 import sys
 from task_service import TaskService
-from utils import extract_rest, argument_count
+from utils import extract_rest
+from decorators import argument_count, integer_argument
 
 
 class CLI:
@@ -39,18 +40,21 @@ class CLI:
 
 
     @argument_count(2)
+    @integer_argument
     def update_task(self) -> None:
         task_id, description = self.args
         self.task_service.update(int(task_id), description)
 
     
     @argument_count(1)
+    @integer_argument
     def delete_task(self) -> None:
         task_id = self.args[0]
         self.task_service.delete(int(task_id))
 
     
     @argument_count(1)
+    @integer_argument
     def mark_task(self) -> None:
         _, task_status = self.command.split("-", 1)
 
