@@ -97,16 +97,6 @@ Each task contains:
 * `createdAt` - task creation date and time
 * `updatedAt` - last update date and time
 
-## Project Structure
-
-```text
-task-tracker/
-├── task_cli.py
-├── tasks.json
-├── README.md
-└── .gitignore
-```
-
 ## Statuses
 
 Tasks can have one of the following statuses:

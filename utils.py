@@ -7,8 +7,8 @@ class Task:
     task_id: int
     description: str
     status: str
-    createdAt: str
-    updatedAt: str | None
+    created_at: str
+    updated_at: str | None = None
 
 
 def extract_rest(*args):
@@ -20,15 +20,15 @@ def current_datetime() -> str:
     return datetime.now().strftime("%d-%m-%YT%H:%M")
 
 
-def generate_id(tasks: list[Task] | None) -> int:
-    if not tasks:
-        return 1
-
-    return max(get_tasks_id(tasks)) + 1
-
-
-def get_tasks_id(tasks: list[Task] | None) -> tuple[int, ...]:
+def get_tasks_id(tasks: list[Task]):
     if not tasks:
         return ()
+    
+    return tuple(row.task_id for row in tasks)
 
-    return tuple(task.task_id for task in tasks)
+
+def generate_id(tasks_id: tuple[int, ...]) -> int:
+    if not tasks_id:
+        return 1
+
+    return max(tasks_id) + 1

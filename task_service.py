@@ -1,73 +1,61 @@
 from json_manager import JsonManager
+from decorators import validate_task_id
 from utils import (
     Task, 
     current_datetime, 
-    generate_id, 
-    get_tasks_id
+    generate_id,
+    get_tasks_id 
 )
 
 
 class TaskService:
     def __init__(self, file_name: str):
-        self.file_name = file_name
         self.js_manager = JsonManager(file_name)
         
 
     def add(self, description: str) -> None:
         tasks = self.js_manager.read()
-
-        if tasks is None:
-            tasks = []
         
         tasks.append(
             Task(
-                task_id=generate_id(tasks=tasks), 
+                task_id=generate_id(get_tasks_id(tasks)), 
                 description=description, 
                 status="todo",
-                createdAt=current_datetime(),
-                updatedAt=None
+                created_at=current_datetime(),
             )
         )
 
         self.js_manager.save(tasks=tasks)
 
-    
-    def update(self, task_id: int, description: str) -> None:
-        tasks = self.js_manager.read()
 
-        if tasks is None:
-            return
+    @validate_task_id
+    def update(self, task_id: int, description: str, tasks: list[Task]) -> None:
 
-        if task_id in get_tasks_id(tasks):
-            for task in tasks:
-                if task.task_id == task_id:
-                    task.description = description
-                    task.updatedAt = current_datetime()
-                    break
+        for task in tasks:
+            if task.task_id == task_id:
+                task.description = description
+                task.updated_at = current_datetime()
+                break
 
-            self.js_manager.save(tasks=tasks)
+        self.js_manager.save(tasks=tasks)
 
     
-    def delete(self, task_id: int) -> None:
-        tasks = [task for task in self.js_manager.read() if task.task_id != task_id]
+    @validate_task_id
+    def delete(self, task_id: int, tasks: list[Task]) -> None:
+        tasks = [task for task in tasks if task.task_id != task_id]
 
         self.js_manager.save(tasks=tasks)
 
 
-    def mark(self, task_status: str, task_id: int) -> None:
-        tasks = self.js_manager.read()
+    @validate_task_id
+    def mark(self, task_id: int, task_status: str, tasks: list[Task]) -> None:
 
-        if tasks is None:
-            return
+        for task in tasks:
+            if task.task_id == task_id:
+                task.status = task_status
+                task.updated_at = current_datetime()
+                break
 
-        if task_id in get_tasks_id(tasks):
-            for task in tasks:
-                if task.task_id == task_id:
-                    task.status = task_status
-                    task.updatedAt = current_datetime()
-                    break
-
-            self.js_manager.save(tasks=tasks)
-
+        self.js_manager.save(tasks=tasks)
 
 
