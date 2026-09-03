@@ -19,8 +19,8 @@ class CLI:
             "delete": self.delete_task,
             "mark-in-progress": self.mark_task,
             "mark-done": self.mark_task,
-            "help": self.help
-
+            "help": self.help,
+            "list": self.list_task
         }
 
     
@@ -37,6 +37,16 @@ class CLI:
         except TaskTrackerError as error:
             print(error)
 
+
+    @argument_count(0, 1)
+    def list_task(self) -> None:
+        status = self.args[0] if self.args else None
+
+        tasks = self.task_service.listed(status)
+
+        for task in tasks:
+            print(f"{task.task_id}: {task.description}")
+        
     
     @argument_count(1)
     def add_task(self) -> None:

@@ -1,7 +1,9 @@
 from json_manager import JsonManager
+from exceptions import InvalidTaskStatusError
 from decorators import validate_task_id
 from utils import (
-    Task, 
+    Task,
+    TASK_STATUSES, 
     current_datetime, 
     generate_id,
     get_tasks_id 
@@ -57,5 +59,19 @@ class TaskService:
                 break
 
         self.js_manager.save(tasks=tasks)
+
+    
+    def listed(self, status: str | None = None) -> list[Task]:
+        tasks = self.js_manager.read()
+        statuses = TASK_STATUSES if status is None else (status,)
+
+        if status is not None and status not in TASK_STATUSES:
+            raise InvalidTaskStatusError(f"invalid task status {status!r}.")
+
+        return [
+            task 
+            for task in tasks
+            if task.status in statuses
+        ]
 
 

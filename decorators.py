@@ -8,13 +8,16 @@ from exceptions import (
 )
 
 
-def argument_count(count: int):
+def argument_count(*counts: int):
     def decorator(func: Callable):
         @wraps(func)
         def wrapper(self):
-            if count != len(self.args):
+            if len(self.args) not in counts:
+                allowed = " or ".join(map(str, counts))
+
                 raise ArgumentCountError(
-                    f"Error: {self.command!r} requires {count} argument(s), "
+                    f"Error: {self.command!r} requires "
+                    f"{allowed} argument(s), "
                     f"but {len(self.args)} were provided."
                 )
 

@@ -6,6 +6,10 @@ class InvalidJsonError(TaskTrackerError):
     ...
 
 
+class InvalidTaskStatusError(TaskTrackerError):
+    ...
+
+
 class InvalidTaskStructureError(TaskTrackerError):
     ...
 

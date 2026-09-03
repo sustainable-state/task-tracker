@@ -2,6 +2,9 @@ from datetime import datetime
 from dataclasses import dataclass
 
 
+TASK_STATUSES = ("todo", "in-progress", "done")
+
+
 @dataclass
 class Task:
     task_id: int
