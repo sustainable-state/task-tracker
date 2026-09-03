@@ -3,6 +3,7 @@ import os
 from dataclasses import asdict
 
 from utils import Task
+from exceptions import InvalidJsonError, InvalidTaskStructureError
 
 
 class JsonManager:
@@ -26,10 +27,18 @@ class JsonManager:
 
         try:
             with open(self.file_name, "r", encoding="utf-8") as file:
+                data = json.load(file)
 
-                return [Task(**row) for row in json.load(file)]
-            
-        except json.JSONDecodeError:
-            return []
+            return [Task(**row) for row in data]
 
+        except json.JSONDecodeError as error:
+            raise InvalidJsonError(
+                f"{self.file_name!r} contains invalid JSON data."
+            ) from error
+
+        except TypeError as error:
+            raise InvalidTaskStructureError(
+                f"{self.file_name!r} does not match "
+                "the expected task structure."
+            ) from error
 

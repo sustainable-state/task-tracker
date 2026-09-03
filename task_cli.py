@@ -2,6 +2,7 @@ import sys
 from task_service import TaskService
 from utils import extract_rest
 from decorators import argument_count, parse_integer_argument
+from exceptions import TaskTrackerError
 
 
 class CLI:
@@ -24,13 +25,17 @@ class CLI:
 
     
     def execute_operation(self) -> None:
-        if self.command in self.operator:
-            self.operator[self.command]()
-        else:
+        if self.command not in self.operator:
             print(
                 f"entered action do not support {self.command!r}. "
                 "Otherwise enter 'help' to see supported actions"
             )
+            return 
+        
+        try:
+            self.operator[self.command]()
+        except TaskTrackerError as error:
+            print(error)
 
     
     @argument_count(1)
