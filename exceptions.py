@@ -24,3 +24,7 @@ class IntegerArgumentError(TaskTrackerError):
 
 class ArgumentCountError(TaskTrackerError):
     ...
+
+
+class InvalidDescriptionError(TaskTrackerError):
+    ...

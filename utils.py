@@ -1,5 +1,6 @@
 from datetime import datetime
 from dataclasses import dataclass
+from exceptions import InvalidDescriptionError, InvalidTaskStatusError
 
 
 TASK_STATUSES = ("todo", "in-progress", "done")
@@ -35,3 +36,31 @@ def generate_id(tasks_id: tuple[int, ...]) -> int:
         return 1
 
     return max(tasks_id) + 1
+
+
+def validate_description(description: str) -> str:
+    description = description.strip()
+
+    if not description:
+        raise InvalidDescriptionError("Error: description cannot be empty.")
+    
+    return description
+
+
+def configure_status(status: str) -> str | tuple[str]:
+    statuses = TASK_STATUSES if status is None else (status,)
+
+    if status not in statuses:
+        raise InvalidTaskStatusError(f"invalid task status {status!r}.")
+    
+    return statuses
+
+
+def validate_status(status: str) -> str:
+
+    if status not in TASK_STATUSES:
+        raise InvalidTaskStatusError(f"invalid task status {status!r}.")
+    
+    return status
+
+

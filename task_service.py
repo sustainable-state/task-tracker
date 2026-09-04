@@ -6,7 +6,9 @@ from utils import (
     TASK_STATUSES, 
     current_datetime, 
     generate_id,
-    get_tasks_id 
+    get_tasks_id,
+    configure_status,
+    validate_status
 )
 
 
@@ -15,12 +17,13 @@ class TaskService:
         self.js_manager = JsonManager(file_name)
         
 
-    def add(self, description: str) -> None:
+    def add(self, description: str) -> int:
         tasks = self.js_manager.read()
+        task_id = generate_id(get_tasks_id(tasks))
         
         tasks.append(
             Task(
-                task_id=generate_id(get_tasks_id(tasks)), 
+                task_id=task_id, 
                 description=description, 
                 status="todo",
                 created_at=current_datetime(),
@@ -28,6 +31,7 @@ class TaskService:
         )
 
         self.js_manager.save(tasks=tasks)
+        return task_id
 
 
     @validate_task_id
@@ -50,11 +54,12 @@ class TaskService:
 
 
     @validate_task_id
-    def mark(self, task_id: int, task_status: str, tasks: list[Task]) -> None:
+    def mark(self, task_id: int, status: str, tasks: list[Task]) -> None:
+        status = validate_status(status)
 
         for task in tasks:
             if task.task_id == task_id:
-                task.status = task_status
+                task.status = status
                 task.updated_at = current_datetime()
                 break
 
@@ -63,10 +68,7 @@ class TaskService:
     
     def listed(self, status: str | None = None) -> list[Task]:
         tasks = self.js_manager.read()
-        statuses = TASK_STATUSES if status is None else (status,)
-
-        if status is not None and status not in TASK_STATUSES:
-            raise InvalidTaskStatusError(f"invalid task status {status!r}.")
+        statuses = configure_status(status)
 
         return [
             task 

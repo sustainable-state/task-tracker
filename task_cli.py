@@ -1,6 +1,6 @@
 import sys
 from task_service import TaskService
-from utils import extract_rest
+from utils import extract_rest, validate_description
 from decorators import argument_count, parse_integer_argument
 from exceptions import TaskTrackerError
 
@@ -20,7 +20,7 @@ class CLI:
             "mark-in-progress": self.mark_task,
             "mark-done": self.mark_task,
             "help": self.help,
-            "list": self.list_task
+            "list": self.list_task,
         }
 
     
@@ -41,7 +41,6 @@ class CLI:
     @argument_count(0, 1)
     def list_task(self) -> None:
         status = self.args[0] if self.args else None
-
         tasks = self.task_service.listed(status)
 
         for task in tasks:
@@ -51,14 +50,16 @@ class CLI:
     @argument_count(1)
     def add_task(self) -> None:
         description = self.args[0]
-        self.task_service.add(description)
+        task_id = self.task_service.add(validate_description(description))
+        print(f"Task added successfully (ID: {task_id})")
 
 
     @argument_count(2)
     @parse_integer_argument
     def update_task(self) -> None:
         task_id, description = self.args
-        self.task_service.update(task_id, description)
+        self.task_service.update(task_id, validate_description(description))
+        print(f"Task updated successfully (ID: {task_id})")
 
     
     @argument_count(1)
@@ -66,6 +67,7 @@ class CLI:
     def delete_task(self) -> None:
         task_id = self.args[0]
         self.task_service.delete(task_id)
+        print(f"Task deleted successfully (ID: {task_id})")
 
     
     @argument_count(1)
@@ -79,6 +81,8 @@ class CLI:
             task_status
         )
 
+        print(f"Task marked successfully (ID: {task_id}) as {task_status!r}")
+
     
     @argument_count(0)
     def help(self) -> None:
@@ -89,7 +93,24 @@ class CLI:
 
         print("read 'README.md' to use actions properly")
 
+    
+
+def main() -> None:
+    args = extract_rest(*sys.argv)
+
+    if not args:
+        print(
+            "No command provided. "
+            "Use 'help' to see available commands."
+        )
+        return
+
+    cli = CLI(*args)
+    cli.execute_operation()
+
+
 
 if __name__ == "__main__":
-    cli = CLI(*extract_rest(*sys.argv))
-    cli.execute_operation()
+    main()
+
+

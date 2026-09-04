@@ -94,8 +94,8 @@ Each task contains:
 * `id` - unique task identifier
 * `description` - task description
 * `status` - task status
-* `createdAt` - task creation date and time
-* `updatedAt` - last update date and time
+* `created_at` - task creation date and time
+* `updated_at` - last update date and time
 
 ## Statuses
 
@@ -104,3 +104,5 @@ Tasks can have one of the following statuses:
 * `todo`
 * `in-progress`
 * `done`
+
+url: https://roadmap.sh/projects/task-tracker
