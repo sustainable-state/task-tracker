@@ -47,13 +47,16 @@ def validate_description(description: str) -> str:
     return description
 
 
-def configure_status(status: str) -> str | tuple[str]:
-    statuses = TASK_STATUSES if status is None else (status,)
+def configure_status(status: str | None) -> tuple[str, ...]:
+    if status is None:
+        return TASK_STATUSES
 
-    if status not in statuses:
-        raise InvalidTaskStatusError(f"invalid task status {status!r}.")
-    
-    return statuses
+    if status not in TASK_STATUSES:
+        raise InvalidTaskStatusError(
+            f"invalid task status {status!r}."
+        )
+
+    return (status,)
 
 
 def validate_status(status: str) -> str:

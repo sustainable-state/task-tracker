@@ -1,9 +1,7 @@
 from json_manager import JsonManager
-from exceptions import InvalidTaskStatusError
 from decorators import validate_task_id
 from utils import (
     Task,
-    TASK_STATUSES, 
     current_datetime, 
     generate_id,
     get_tasks_id,
