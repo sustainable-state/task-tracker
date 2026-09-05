@@ -42,10 +42,13 @@ class CLI:
     def list_task(self) -> None:
         status = self.args[0] if self.args else None
         tasks = self.task_service.listed(status)
-
-        for task in tasks:
-            print(f"{task.task_id}: {task.description}")
         
+        if tasks:
+            for task in tasks:
+                print(f"{task.task_id}: {task.description}")
+        else:
+            print(f"No tasks with status {status!r} exist.")
+            
     
     @argument_count(1)
     def add_task(self) -> None:
