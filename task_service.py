@@ -11,7 +11,7 @@ from utils import (
 
 
 class TaskService:
-    def __init__(self, file_name: str):
+    def __init__(self, file_name: str) -> None:
         self.js_manager = JsonManager(file_name)
         
 

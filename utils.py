@@ -15,7 +15,7 @@ class Task:
     updated_at: str | None = None
 
 
-def extract_rest(*args):
+def extract_rest(*args) -> list[str]:
     _, *rest = args
     return rest
 
@@ -24,7 +24,7 @@ def current_datetime() -> str:
     return datetime.now().strftime("%d-%m-%YT%H:%M")
 
 
-def get_tasks_id(tasks: list[Task]):
+def get_tasks_id(tasks: list[Task]) -> tuple[int, ...]:
     if not tasks:
         return ()
     

@@ -27,8 +27,8 @@ class CLI:
     def execute_operation(self) -> None:
         if self.command not in self.operator:
             print(
-                f"entered action do not support {self.command!r}. "
-                "Otherwise enter 'help' to see supported actions"
+                f"Unsupported action: {self.command!r}. "
+                "Use 'help' to see available actions."
             )
             return 
         
@@ -91,7 +91,7 @@ class CLI:
         for action in self.operator:
             print(action)
 
-        print("read 'README.md' to use actions properly")
+        print("Read 'README.md' to see how to use the commands.")
 
     
 
