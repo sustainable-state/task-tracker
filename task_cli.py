@@ -45,7 +45,7 @@ class CLI:
         
         if tasks:
             for task in tasks:
-                print(f"{task.task_id}: {task.description}")
+                print(f"{task.task_id}: {task.description} - {task.status}")
         else:
             print(f"No tasks with status {status!r} exist.")
             
